@@ -98,7 +98,7 @@ def chart():
     return render_template("earthquake.html", dates=data_map)
 
 
-@app.route('/earthquake', methods=["POST"])
+@app.route('/earthquake', methods=["GET"])
 def determine_earthquake():
     data = json.loads(request.data)
     earthquake_data = get_earthquake_data(data['latitude'], data['longitude'])
@@ -232,6 +232,8 @@ def process_address():
                 street)
             anarghya[street] = [latitude, longitude, _score]
             final.append({
+                "lat": latitude,
+                "lng": longitude,
                 "street": street,
                 "score": round(_score, 2),
                 "price": locale.currency(price, grouping=True)
