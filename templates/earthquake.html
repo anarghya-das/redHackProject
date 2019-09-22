@@ -9,7 +9,7 @@
         <div id="id_{{loop.index}}">{{dates[item]}}</div> 
         {% endfor %}
     </div>
-    <canvas id="myChart" width="40" height="40"></canvas>
+    <canvas id="myChart" width="40vh" height="40vh"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
     <script>
     datapoints = []
@@ -26,7 +26,8 @@
     data: {
         labels: ["1960", "1970", "1980", "1990", "2000", "2010"] ,
         datasets: [{
-            data: datapoints
+            data: datapoints,
+            backgroundColor: 'rgb(63, 191, 63, 0.1)'
     }],
 },
 
