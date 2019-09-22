@@ -68,6 +68,45 @@ def chart():
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
     earthquake_data = get_earthquake_data(latitude, longitude)
+    x_vector = [0]*5
+    for data in earthquake_data["features"]:
+        data = data["properties"]
+        if not data['mag']:
+            continue
+        if 4.5 < data["mag"] < 5:
+            x_vector[0] += 1
+        elif 5 < data["mag"] < 5.5:
+            x_vector[1] += 1
+        elif 5.5 < data["mag"] < 6:
+            x_vector[2] += 1
+        elif 6 < data["mag"] < 6.5:
+            x_vector[3] += 1
+        elif data["mag"] > 6.5:
+            x_vector[4] += 1
+    value = "0"
+    
+    if x_vector[3] > 1:
+        value= "3"
+    elif x_vector[2] > 2:
+        value = "2"
+    elif x_vector[1]>3:
+        value = "1"
+    ml_instance_id = "f84688e7-0454-4ca1-a25c-1af2172e6772"
+    iam_token = "eyJraWQiOiIyMDE5MDUxMyIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJpYW0tU2VydmljZUlkLWU5YWVlYzhmLTNiOTQtNDQ5NC04ZTE0LTI1YjdiNDAzZDg3MiIsImlkIjoiaWFtLVNlcnZpY2VJZC1lOWFlZWM4Zi0zYjk0LTQ0OTQtOGUxNC0yNWI3YjQwM2Q4NzIiLCJyZWFsbWlkIjoiaWFtIiwiaWRlbnRpZmllciI6IlNlcnZpY2VJZC1lOWFlZWM4Zi0zYjk0LTQ0OTQtOGUxNC0yNWI3YjQwM2Q4NzIiLCJzdWIiOiJTZXJ2aWNlSWQtZTlhZWVjOGYtM2I5NC00NDk0LThlMTQtMjViN2I0MDNkODcyIiwic3ViX3R5cGUiOiJTZXJ2aWNlSWQiLCJhY2NvdW50Ijp7InZhbGlkIjp0cnVlLCJic3MiOiI3NjE4ZGJlNjcxYzY0OTk3YmU3ZTkzMzU3Zjg3NjEzMyJ9LCJpYXQiOjE1NjkxNDQ5MjcsImV4cCI6MTU2OTE0ODUyNywiaXNzIjoiaHR0cHM6Ly9pYW0ubmcuYmx1ZW1peC5uZXQvb2lkYy90b2tlbiIsImdyYW50X3R5cGUiOiJ1cm46aWJtOnBhcmFtczpvYXV0aDpncmFudC10eXBlOmFwaWtleSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.eumo0-rrglb2GOzUArnPmqbOECv3p1790oydlzF4FMei9UqS6psjCb8xNB-vJ7EYhOfqJUI2daGff-gtVNZWVO7UcjSTLEjq_DA9RtwPXjVK_kuo3JxMeM7qichIvXgfvoVhaLn30MmJf97hWxKvRQTaUYFlFWPzrCbCN90_hV6WHxu-ssdap4dnnuD6eGdEEY0NHrAe3M_WH1m9jxX3bhC4s8ZbPSWwXt6AN0N4v8XCdbiTldK9Gnimd44lRznM_005rZoAfDuYh-RCJbm9kg7IjsYt6pUvR0bVhIwjnRogJzd77JDoIGrl8iJbrgVL75Tv1jmgwABUpWOhMOgZEg"
+    # NOTE: generate iam_token and retrieve ml_instance_id based on provided documentation
+    header = {'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + iam_token, 'ML-Instance-ID': ml_instance_id}
+
+    # NOTE: manually define and pass the array(s) of values to be scored in the next line
+    payload_scoring = {"input_data": [
+        {"fields": ["0", "1", "2", "3", "4"], "values": [[18, 10, 1, 0, 1]]}]}
+
+    response_scoring = requests.post(
+        'https://us-south.ml.cloud.ibm.com/v4/deployments/1d20095e-acdc-4c53-a82c-07daacf2e3d7/predictions', json=payload_scoring, headers=header)
+
+    print(response_scoring.text)
+    value = json.loads(response_scoring.text)["predictions"][0]["values"][0][0]
+
     data_map = {"1960": 0, "1970": 0, "1980": 0,
                 "1990": 0, "2000": 0, "2010": 0, "2020": 0}
     for data in earthquake_data["features"]:
@@ -95,47 +134,10 @@ def chart():
     return render_template("earthquake.html", dates=data_map)
 
 
-@app.route('/earthquake', methods=["GET"])
-def determine_earthquake():
-    earthquake_data = get_earthquake_data(
-        request.args['latitude'], request.args['longitude'])
-    x_vector = [0]*5
-    for data in earthquake_data["features"]:
-        data = data["properties"]
-        if not data['mag']:
-            continue
-        if 4.5 < data["mag"] < 5:
-            x_vector[0] += 1
-        elif 5 < data["mag"] < 5.5:
-            x_vector[1] += 1
-        elif 5.5 < data["mag"] < 6:
-            x_vector[2] += 1
-        elif 6 < data["mag"] < 6.5:
-            x_vector[3] += 1
-        elif data["mag"] > 6.5:
-            x_vector[4] += 1
-    if x_vector[1]>3:
-        return "1"
-    if x_vector[2] > 2:
-        return "2"
-    if x_vector[3] > 1:
-        return "3"
-    ml_instance_id = "f84688e7-0454-4ca1-a25c-1af2172e6772"
-    iam_token = "eyJraWQiOiIyMDE5MDUxMyIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJpYW0tU2VydmljZUlkLWU5YWVlYzhmLTNiOTQtNDQ5NC04ZTE0LTI1YjdiNDAzZDg3MiIsImlkIjoiaWFtLVNlcnZpY2VJZC1lOWFlZWM4Zi0zYjk0LTQ0OTQtOGUxNC0yNWI3YjQwM2Q4NzIiLCJyZWFsbWlkIjoiaWFtIiwiaWRlbnRpZmllciI6IlNlcnZpY2VJZC1lOWFlZWM4Zi0zYjk0LTQ0OTQtOGUxNC0yNWI3YjQwM2Q4NzIiLCJzdWIiOiJTZXJ2aWNlSWQtZTlhZWVjOGYtM2I5NC00NDk0LThlMTQtMjViN2I0MDNkODcyIiwic3ViX3R5cGUiOiJTZXJ2aWNlSWQiLCJhY2NvdW50Ijp7InZhbGlkIjp0cnVlLCJic3MiOiI3NjE4ZGJlNjcxYzY0OTk3YmU3ZTkzMzU3Zjg3NjEzMyJ9LCJpYXQiOjE1NjkxNDQ5MjcsImV4cCI6MTU2OTE0ODUyNywiaXNzIjoiaHR0cHM6Ly9pYW0ubmcuYmx1ZW1peC5uZXQvb2lkYy90b2tlbiIsImdyYW50X3R5cGUiOiJ1cm46aWJtOnBhcmFtczpvYXV0aDpncmFudC10eXBlOmFwaWtleSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.eumo0-rrglb2GOzUArnPmqbOECv3p1790oydlzF4FMei9UqS6psjCb8xNB-vJ7EYhOfqJUI2daGff-gtVNZWVO7UcjSTLEjq_DA9RtwPXjVK_kuo3JxMeM7qichIvXgfvoVhaLn30MmJf97hWxKvRQTaUYFlFWPzrCbCN90_hV6WHxu-ssdap4dnnuD6eGdEEY0NHrAe3M_WH1m9jxX3bhC4s8ZbPSWwXt6AN0N4v8XCdbiTldK9Gnimd44lRznM_005rZoAfDuYh-RCJbm9kg7IjsYt6pUvR0bVhIwjnRogJzd77JDoIGrl8iJbrgVL75Tv1jmgwABUpWOhMOgZEg"
-    # NOTE: generate iam_token and retrieve ml_instance_id based on provided documentation
-    header = {'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + iam_token, 'ML-Instance-ID': ml_instance_id}
-
-    # NOTE: manually define and pass the array(s) of values to be scored in the next line
-    payload_scoring = {"input_data": [
-        {"fields": ["0", "1", "2", "3", "4"], "values": [[18, 10, 1, 0, 1]]}]}
-
-    response_scoring = requests.post(
-        'https://us-south.ml.cloud.ibm.com/v4/deployments/1d20095e-acdc-4c53-a82c-07daacf2e3d7/predictions', json=payload_scoring, headers=header)
-
-    print(response_scoring.text)
-    value = json.loads(response_scoring.text)["predictions"][0]["values"][0][0]
-    return str(value)
+# @app.route('/earthquake', methods=["GET"])
+# def determine_earthquake():
+    
+#     return str(value)
 
 
 @app.route('/list', methods=["GET", "POST"])
