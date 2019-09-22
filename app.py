@@ -100,8 +100,8 @@ def chart():
 
 @app.route('/earthquake', methods=["GET"])
 def determine_earthquake():
-    data = json.loads(request.data)
-    earthquake_data = get_earthquake_data(data['latitude'], data['longitude'])
+    earthquake_data = get_earthquake_data(
+        request.args['latitude'], request.args['longitude'])
     x_vector = [0]*5
     for data in earthquake_data["features"]:
         data = data["properties"]
