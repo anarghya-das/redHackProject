@@ -1,88 +1,114 @@
-{% extends "base.html" %}
-{% block head %}
-    {{ super() }}
-{% endblock %}
-{% block content %}
-    <!--
+{% extends "base.html" %} {% block head %}
+{{ super() }}
+{% endblock %} {% block content %}
+<!--
 	{% for item in sorted_array%}
 	<p> {{ item }} </p>
 	{% endfor %}
     -->
-
+<link
+  href="https://fonts.googleapis.com/css?family=Courgette|Pacifico&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+  crossorigin="anonymous"
+/>
 <section class="strips">
-    <!--<form action="" method="post" novalidate>
+  <!--<form action="" method="post" novalidate>
         { form.hidden_tag() }}-->
-    <article class="strips__strip strips__strip--expanded">
-        <div class="strip__content">
-            <h1 class="strip__title" data-name="Lorem"></h1>
+  <article class="strips__strip strips__strip--expanded">
+    <div class="strip__content">
+      <h1 class="strip__title" data-name="Lorem"></h1>
 
-            <div class="strip__inner-text">
-                <h1>Project Casa</h1>
-                <br/><br/><br/><br/>
-                <h3>Where would you like to settle next? :)</h3>
-                <div class='login'>
-                  <div class='login_fields'>
-                    <div class='login_fields__submit'>
-                        <form id = "all-tracks-form" class = "spotipy-form" action="" method="post" novalidate>
-                            {{ form.hidden_tag() }}
-                            {{ form.search() }}
-                            {{ form.submit() }}
-                        </form>
-                    </div>
-              </div>
-                </div>
-                <div class='authent'>
-                  <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/puff.svg'>
-                  <p>Searching...</p>
-                </div>
-
+      <div class="strip__inner-text">
+        <h1 style="font-family: 'Pacifico', cursive;font-size: 120px">
+          Project Casa
+        </h1>
+        <br /><br />
+        <h3 style="font-family: 'Courgette', cursive;">
+          Where would you like to settle next? :)
+        </h3>
+        <div class="login">
+          <div class="login_fields">
+            <div class="login_fields__submit">
+              <form
+                id="all-tracks-form"
+                class="spotipy-form"
+                action=""
+                method="post"
+                novalidate
+              >
+                {{ form.hidden_tag() }}
+                {{ form.search() }}
+                {{ form.submit() }}
+              </form>
             </div>
-
+          </div>
         </div>
-    </article>
+        <div class="authent">
+          <img
+            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/puff.svg"
+          />
+          <p>Searching...</p>
+        </div>
+      </div>
+    </div>
+  </article>
 </section>
 
 <script>
-var Expand = (function() {
-  var tile = $('.strips__strip');
-  var tileLink = $('.strips__strip > .strip__content');
-  var tileText = tileLink.find('.strip__inner-text');
-  var stripClose = $('.strip__close');
-  var closeIconWrapper = $('.close-icon-wrapper')
-  var expanded  = false;
+  var Expand = (function() {
+    var tile = $(".strips__strip");
+    var tileLink = $(".strips__strip > .strip__content");
+    var tileText = tileLink.find(".strip__inner-text");
+    var stripClose = $(".strip__close");
+    var closeIconWrapper = $(".close-icon-wrapper");
+    var expanded = false;
 
-  var open = function() {
-
-    var tile = $(this).parent();
+    var open = function() {
+      var tile = $(this).parent();
 
       if (!expanded) {
-        tile.addClass('strips__strip--expanded');
+        tile.addClass("strips__strip--expanded");
         // add delay to inner text
-        tileText.css('transition', 'all .1s .1s cubic-bezier(0.23, 1, 0.32, 1)');
-        stripClose.addClass('strip__close--show');
-        stripClose.css('transition', 'all 0.5s 0.5s cubic-bezier(0.23, 1, 0.32, 1)');
-        closeIconWrapper.css('display', 'block');
+        tileText.css(
+          "transition",
+          "all .1s .1s cubic-bezier(0.23, 1, 0.32, 1)"
+        );
+        stripClose.addClass("strip__close--show");
+        stripClose.css(
+          "transition",
+          "all 0.5s 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+        );
+        closeIconWrapper.css("display", "block");
         expanded = true;
       }
     };
 
-  var close = function() {
-
+    var close = function() {
       $(document).ready(function() {
-          if (expanded) {
-            $(".strips__strip--expanded").removeClass('strips__strip--expanded');
-            tileText.css('transition', 'all 0.3s .05s cubic-bezier(0.23, 1, 0.32, 1)');
-            $(".strip__close--show").removeClass('strip__close--show')
-            stripClose.css('transition', 'all 0.01s 0s cubic-bezier(0.23, 1, 0.32, 1)')
-            expanded = false;
-          }
+        if (expanded) {
+          $(".strips__strip--expanded").removeClass("strips__strip--expanded");
+          tileText.css(
+            "transition",
+            "all 0.3s .05s cubic-bezier(0.23, 1, 0.32, 1)"
+          );
+          $(".strip__close--show").removeClass("strip__close--show");
+          stripClose.css(
+            "transition",
+            "all 0.01s 0s cubic-bezier(0.23, 1, 0.32, 1)"
+          );
+          expanded = false;
+        }
       });
-
-  }
+    };
 
     var bindActions = function() {
-      tileLink.on('click', open);
-      stripClose.on('click', close);
+      tileLink.on("click", open);
+      stripClose.on("click", close);
     };
 
     var init = function() {
@@ -92,11 +118,9 @@ var Expand = (function() {
     return {
       init: init
     };
+  })();
 
-  }());
-
-Expand.init();
-        </script>
-
+  Expand.init();
+</script>
 
 {% endblock %}
