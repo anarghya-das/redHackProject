@@ -168,8 +168,10 @@ def process_address():
     county, state, city, formatted_address, latitude, longitude = break_address(
         address)
 
+    anarghya = {}
     location = county[:county.index(' County')] + " , " + state
     main_score = store[location]["score"]
+    anarghya[formatted_address] = [latitude, longitude, main_score]
     price = get_address_price(address, city + state)
     # find x neighboring counties, use the dmatrix
     from closest import closest_k
@@ -220,7 +222,6 @@ def process_address():
                     random.randint(200000, 600000)))
             except:
                 prices[old] = (random.randint(200000, 600000))
-    anarghya = {}
     for neighbor, _score in ordered_scores.items():
         if content:
             street = content[neighbor] if neighbor in content else ""
