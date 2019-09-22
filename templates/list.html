@@ -53,7 +53,7 @@
           {% endif %}
           <td>
             <a
-              href="{{ url_for('determine_earthquake',latitude= item['lat'],longitude=item['lng']) }}"
+              href="{{ url_for('determine_earthquake',latitude= item['lat'],city=item['city'],longitude=item['lng']) }}"
               class="street_links"
               >{{ item["street"] }}</a
             >

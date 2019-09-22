@@ -63,6 +63,8 @@ def home():
 
 @app.route('/chart_data', methods=["GET"])
 def chart():
+    city = request.args.get('city')
+    print(city)
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
     earthquake_data = get_earthquake_data(latitude, longitude)
@@ -75,7 +77,6 @@ def chart():
         except:
             print("ERROR")
             continue
-        print(time)
         if datetime(1960, 1, 1) > time:
             data_map["1960"] += 1
         elif datetime(1970, 1, 1) > time:
@@ -237,6 +238,7 @@ def process_address():
                 "lat": latitude,
                 "lng": longitude,
                 "street": street,
+                "city": city,
                 "score": round(_score, 2),
                 "price": locale.currency(price, grouping=True)
             })
