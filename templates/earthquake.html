@@ -9,7 +9,9 @@
         <div id="id_{{loop.index}}">{{dates[item]}}</div> 
         {% endfor %}
     </div>
-    <canvas id="myChart" width="40vh" height="40vh"></canvas>
+    <div width="400", height="400">
+    <canvas id="myChart" x></canvas>
+</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
     <script>
     datapoints = []
@@ -23,27 +25,36 @@
     Chart.defaults.global.animation.duration = 3000;
     var myChart = new Chart(ctx, {
     type: 'line',
+    legend: {
+ labels: {
+   boxWidth: 0,
+ }
+},
     data: {
-        labels: ["1960", "1970", "1980", "1990", "2000", "2010"] ,
+        labels: ["1960", "1970", "1980", "1990", "2000", "2010", ] ,
         datasets: [{
             data: datapoints,
-            backgroundColor: 'rgb(63, 191, 63, 0.1)'
+            backgroundColor: 'rgb(63, 191, 63, 0.1)',
+            borderColor: 'rgb(63, 191, 63)'
     }],
 },
 
     options: {
+        legend: {
+            display:false
+
+},
         title: {
            text: 'Earthquakes happening at this location with magnitude greater than 4.0',
              display: true,
              fontSize: 16
         },
-        animation: true,
-        animationEasing: 'linear',
-        animationSteps: 80,
         scales: {
             yAxes: [{
-                ticks: {
-                    beginAtZero: true
+                
+                scaleLabel : {
+                    display: true,
+                    labelString: 'Number of Earthquakes'
                 }
             }],
             xAxes: [{
