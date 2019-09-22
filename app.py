@@ -190,6 +190,8 @@ def process_address():
     # query all closest_neighbors for price
     final = []
     final.append({
+        "lat": latitude,
+        "lng": longitude,
         "street": formatted_address,
         "score": round(main_score, 2),
         "price": locale.currency(price[1], grouping=True)
