@@ -113,7 +113,9 @@ def determine_earthquake():
             x_vector[3] += 1
         elif data["mag"] > 6.5:
             x_vector[4] += 1
-    if x_vector[2] > 3:
+    if x_vector[1]>3:
+        return "1"
+    if x_vector[2] > 2:
         return "2"
     if x_vector[3] > 1:
         return "3"
