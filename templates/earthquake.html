@@ -26,12 +26,16 @@
     data: {
         labels: ["1960", "1970", "1980", "1990", "2000", "2010"] ,
         datasets: [{
-            label: '# of Votes',
             data: datapoints
     }],
 },
 
     options: {
+        title: {
+           text: 'Earthquakes happening at this location with magnitude greater than 4.0',
+             display: true,
+             fontSize: 16
+        },
         animation: true,
         animationEasing: 'linear',
         animationSteps: 80,
